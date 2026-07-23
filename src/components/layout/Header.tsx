@@ -43,9 +43,9 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-sm"
     >
-      <div className="max-w-2xl mx-auto px-4 pt-24">
+      <div className="max-w-2xl mx-auto px-4 pt-16 sm:pt-24">
         <form onSubmit={handleSubmit}>
-          <div className="flex items-center gap-4 border-b-2 border-foreground pb-3">
+          <div className="flex items-center gap-2 sm:gap-4 border-b-2 border-foreground pb-3">
             <Search size={22} className="text-muted-foreground shrink-0" />
             <input
               ref={inputRef}
@@ -53,7 +53,7 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Cerca prodotti, brand, modelli..."
-              className="flex-1 text-2xl font-medium bg-transparent outline-none placeholder:text-muted-foreground/50"
+              className="flex-1 min-w-0 text-base sm:text-2xl font-medium bg-transparent outline-none placeholder:text-muted-foreground/50"
             />
             <button type="button" onClick={onClose} className="shrink-0">
               <X size={22} />
@@ -68,14 +68,14 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
                 key={product.id}
                 to={`/product/${product.slug}`}
                 onClick={onClose}
-                className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted transition-colors"
+                className="flex items-center gap-3 sm:gap-4 p-2 sm:p-3 rounded-lg hover:bg-muted transition-colors min-w-0"
               >
                 <img src={product.images[0]} alt={product.title} className="w-12 h-12 object-cover rounded bg-muted" />
-                <div>
-                  <div className="text-sm font-semibold">{product.title}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-semibold truncate">{product.title}</div>
                   <div className="text-xs text-muted-foreground">{product.brand}</div>
                 </div>
-                <div className="ml-auto text-sm font-bold">
+                <div className="ml-auto text-xs sm:text-sm font-bold shrink-0">
                   {new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR", minimumFractionDigits: 0 }).format(product.salePrice ?? product.price)}
                 </div>
               </Link>
@@ -168,9 +168,9 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
       transition={{ type: "tween", duration: 0.3 }}
       className="fixed inset-0 z-[150] bg-background flex flex-col"
     >
-      <div className="flex items-center justify-between p-5 border-b border-border">
+      <div className="flex items-center justify-between px-4 py-4 sm:p-5 border-b border-border">
         <Link to="/" onClick={onClose} className="font-black text-2xl tracking-tight">LUXE.</Link>
-        <button onClick={onClose}><X size={24} /></button>
+        <button onClick={onClose} className="p-2 -mr-2" aria-label="Chiudi menu"><X size={24} /></button>
       </div>
 
       <div className="flex-1 overflow-y-auto py-4">
@@ -254,19 +254,19 @@ export default function Header() {
           scrolled && "shadow-sm"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4 relative">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4 relative">
           {/* Mobile hamburger */}
-          <button className="md:hidden" onClick={() => setMobileOpen(true)} aria-label="Menu">
+          <button className="lg:hidden p-2 -ml-2 shrink-0" onClick={() => setMobileOpen(true)} aria-label="Menu">
             <Menu size={22} />
           </button>
 
           {/* Logo */}
-          <Link to="/" className="font-black text-2xl tracking-tight shrink-0">
+          <Link to="/" className="font-black text-xl sm:text-2xl tracking-tight shrink-0">
             LUXE.
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {navigation.map((item) => (
               <div
                 key={item.href}
@@ -298,7 +298,7 @@ export default function Header() {
           </nav>
 
           {/* Right icons */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0 sm:gap-1 shrink-0">
             <button
               onClick={() => setSearchOpen(true)}
               className="p-2 rounded-md hover:bg-muted transition-colors"
@@ -306,10 +306,10 @@ export default function Header() {
             >
               <Search size={20} />
             </button>
-            <Link to="/account" className="hidden md:flex p-2 rounded-md hover:bg-muted transition-colors" aria-label="Account">
+            <Link to="/account" className="hidden lg:flex p-2 rounded-md hover:bg-muted transition-colors" aria-label="Account">
               <User size={20} />
             </Link>
-            <Link to="/wishlist" className="relative p-2 rounded-md hover:bg-muted transition-colors" aria-label="Wishlist">
+            <Link to="/wishlist" className="relative p-2 rounded-md hover:bg-muted transition-colors hidden min-[360px]:flex" aria-label="Wishlist">
               <Heart size={20} />
               {wishlistCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-accent text-accent-foreground text-[10px] font-bold flex items-center justify-center">

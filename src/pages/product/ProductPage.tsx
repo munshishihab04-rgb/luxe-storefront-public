@@ -60,19 +60,19 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 min-w-0">
       {/* Breadcrumbs */}
-      <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-8">
+      <nav className="flex items-center gap-1.5 text-[11px] sm:text-xs text-muted-foreground mb-4 sm:mb-8 min-w-0 overflow-hidden whitespace-nowrap">
         <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
         <span>/</span>
         <Link to="/shop" className="hover:text-foreground transition-colors">Shop</Link>
         <span>/</span>
-        <span className="text-foreground font-medium truncate max-w-[200px]">{product.title}</span>
+        <span className="text-foreground font-medium truncate min-w-0">{product.title}</span>
       </nav>
 
-      <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
+      <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-16 min-w-0">
         {/* ─── IMAGE GALLERY ─────────────────────────────────────────────────────── */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3 min-w-0 max-w-full">
           {/* Main image */}
           <div className="relative aspect-square overflow-hidden rounded bg-muted group">
             <motion.img
@@ -94,14 +94,14 @@ export default function ProductPage() {
               <>
                 <button
                   onClick={() => setActiveImage((prev) => (prev - 1 + product.images.length) % product.images.length)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors opacity-0 group-hover:opacity-100"
+                  className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/85 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
                   aria-label="Immagine precedente"
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button
                   onClick={() => setActiveImage((prev) => (prev + 1) % product.images.length)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors opacity-0 group-hover:opacity-100"
+                  className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/85 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
                   aria-label="Immagine successiva"
                 >
                   <ChevronRight size={18} />
@@ -118,7 +118,7 @@ export default function ProductPage() {
                   onClick={() => setActiveImage(i)}
                   aria-label={`Mostra immagine ${i + 1} di ${product.title}`}
                   className={cn(
-                    "shrink-0 w-20 h-20 rounded overflow-hidden border-2 transition-colors",
+                    "shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded overflow-hidden border-2 transition-colors",
                     i === activeImage ? "border-foreground" : "border-transparent hover:border-muted-foreground"
                   )}
                 >
@@ -130,7 +130,7 @@ export default function ProductPage() {
         </div>
 
         {/* ─── PRODUCT INFO ───────────────────────────────────────────────────────── */}
-        <div className="md:sticky md:top-24 space-y-6">
+        <div className="md:sticky md:top-24 space-y-4 sm:space-y-6 min-w-0">
           <div>
             <div className="flex items-center justify-between mb-1">
               <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">{product.brand}</p>
@@ -142,18 +142,18 @@ export default function ProductPage() {
                 <Share2 size={16} />
               </button>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight leading-tight mb-3">{product.title}</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight leading-tight mb-2 sm:mb-3 break-words">{product.title}</h1>
             <p className="text-sm text-muted-foreground leading-relaxed">{product.shortDescription}</p>
           </div>
 
           {/* Price */}
-          <div className="flex items-center gap-3">
-            <span className={cn("text-3xl font-black", discountPercent > 0 && "text-red-500")}>
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className={cn("text-2xl sm:text-3xl font-black", discountPercent > 0 && "text-red-500")}>
               {formatPrice(effectivePrice)}
             </span>
             {discountPercent > 0 && (
               <>
-                <span className="text-lg text-muted-foreground line-through">{formatPrice(product.regularPrice)}</span>
+                <span className="text-base sm:text-lg text-muted-foreground line-through">{formatPrice(product.regularPrice)}</span>
                 <span className="bg-red-500 text-white text-xs font-black px-2 py-0.5 rounded">-{discountPercent}%</span>
               </>
             )}
@@ -168,14 +168,14 @@ export default function ProductPage() {
                   Guida alle taglie
                 </button>
               </div>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 min-[380px]:grid-cols-4 sm:grid-cols-5 gap-2">
                 {product.variants.map((variant) => (
                   <button
                     key={variant.id}
                     disabled={!variant.available}
                     onClick={() => setSelectedVariant(variant.id === selectedVariant ? null : variant.id)}
                     className={cn(
-                      "py-2.5 text-sm font-semibold rounded border transition-all relative",
+                      "min-h-11 px-1 py-2.5 text-sm font-semibold rounded border transition-all relative",
                       !variant.available && "opacity-30 cursor-not-allowed line-through",
                       variant.id === selectedVariant
                         ? "bg-foreground text-background border-foreground"
@@ -192,24 +192,24 @@ export default function ProductPage() {
           )}
 
           {/* CTA Buttons */}
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2 sm:gap-3">
             <button
               onClick={handleAddToCart}
-              className="w-full flex items-center justify-center gap-2 bg-foreground text-background py-4 rounded font-black text-sm uppercase tracking-widest hover:bg-foreground/90 transition-colors"
+              className="w-full min-h-12 flex items-center justify-center gap-2 bg-foreground text-background px-3 py-3.5 sm:py-4 rounded font-black text-xs sm:text-sm uppercase tracking-wide sm:tracking-widest hover:bg-foreground/90 transition-colors"
             >
               <ShoppingBag size={16} />
               Aggiungi al Carrello
             </button>
             <button
               onClick={handleBuyNow}
-              className="w-full flex items-center justify-center gap-2 border-2 border-foreground py-4 rounded font-black text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-all"
+              className="w-full min-h-12 flex items-center justify-center gap-2 border-2 border-foreground px-3 py-3.5 sm:py-4 rounded font-black text-xs sm:text-sm uppercase tracking-wide sm:tracking-widest hover:bg-foreground hover:text-background transition-all"
             >
               Acquista Subito <ArrowRight size={16} />
             </button>
             <button
               onClick={() => toggle(product)}
               className={cn(
-                "w-full flex items-center justify-center gap-2 py-3 rounded border text-sm font-semibold transition-all",
+                "w-full min-h-11 min-[420px]:col-span-2 flex items-center justify-center gap-2 py-3 rounded border text-sm font-semibold transition-all",
                 wishlisted
                   ? "bg-foreground text-background border-foreground"
                   : "border-border hover:border-foreground"
@@ -221,7 +221,7 @@ export default function ProductPage() {
           </div>
 
           {/* Trust */}
-          <div className="grid grid-cols-2 gap-3 py-4 border-y border-border">
+          <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3 py-4 border-y border-border">
             {[
               { icon: Truck, text: "Spedizione Tracciata", sub: "Consegna 24/48h" },
               { icon: Shield, text: "Pagamento Sicuro", sub: "SSL certificato" },
@@ -255,9 +255,9 @@ export default function ProductPage() {
 
       {/* ─── RELATED PRODUCTS ─────────────────────────────────────────────────── */}
       {relatedProducts.length > 0 && (
-        <div className="mt-20">
-          <h2 className="text-2xl font-black tracking-tight mb-8">Potrebbe Piacerti</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="mt-12 sm:mt-16 md:mt-20">
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-5 sm:mb-8">Potrebbe Piacerti</h2>
+          <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {relatedProducts.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
           </div>
         </div>

@@ -32,11 +32,11 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-foreground text-background mt-24">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 pt-16 pb-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+    <footer className="bg-foreground text-background mt-14 sm:mt-20 md:mt-24">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 pt-10 sm:pt-16 pb-8">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-10 sm:mb-12">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-1 min-[380px]:col-span-2 md:col-span-1">
             <Link to="/" className="font-black text-3xl tracking-tight text-background block mb-4">LUXE.</Link>
             <p className="text-sm text-background/60 leading-relaxed mb-6 max-w-xs">
               Il marketplace italiano per sneakers, abbigliamento e accessori di lusso e streetwear. Autenticità garantita su ogni prodotto.

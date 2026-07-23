@@ -29,7 +29,7 @@ export default function CartDrawer() {
             className="fixed top-0 right-0 bottom-0 z-[201] w-full max-w-md bg-background flex flex-col shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-border">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-border">
               <h2 className="font-bold text-lg tracking-tight">
                 Carrello {totalItems > 0 && <span className="text-muted-foreground font-normal text-sm">({totalItems})</span>}
               </h2>
@@ -39,7 +39,7 @@ export default function CartDrawer() {
             </div>
 
             {/* Items */}
-            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-5 min-w-0">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full gap-6 text-center py-16">
                   <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
@@ -57,12 +57,12 @@ export default function CartDrawer() {
                 items.map((item) => {
                   const price = item.product.salePrice ?? item.product.price;
                   return (
-                    <div key={`${item.productId}-${item.variantId ?? ""}`} className="flex gap-4">
+                    <div key={`${item.productId}-${item.variantId ?? ""}`} className="flex gap-3 sm:gap-4 min-w-0">
                       <Link to={`/product/${item.product.slug}`} onClick={closeCart} className="shrink-0">
                         <img
                           src={item.product.images[0]}
                           alt={item.product.title}
-                          className="w-20 h-20 object-cover rounded bg-muted"
+                          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded bg-muted"
                           loading="lazy"
                         />
                       </Link>
@@ -74,7 +74,7 @@ export default function CartDrawer() {
                         {item.selectedSize && (
                           <p className="text-xs text-muted-foreground mt-0.5">Taglia: {item.selectedSize}</p>
                         )}
-                        <div className="flex items-center justify-between mt-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
                           {/* Quantity controls */}
                           <div className="flex items-center border border-border rounded">
                             <button
@@ -83,7 +83,7 @@ export default function CartDrawer() {
                             >
                               <Minus size={12} />
                             </button>
-                            <span className="px-3 text-sm font-medium min-w-[2rem] text-center">{item.quantity}</span>
+                            <span className="px-2 text-sm font-medium min-w-[1.75rem] text-center">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.productId, item.quantity + 1, item.variantId)}
                               className="px-2.5 py-1.5 hover:bg-muted transition-colors"
@@ -108,7 +108,7 @@ export default function CartDrawer() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="border-t border-border px-6 py-5 space-y-4">
+              <div className="border-t border-border px-4 sm:px-6 py-4 sm:py-5 space-y-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Subtotale</span>
                   <span className="font-bold text-base">{formatPrice(totalPrice)}</span>

@@ -130,13 +130,27 @@
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
   }
 
   html,
   #root {
+    width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
+  }
+
+  main,
+  form,
+  input,
+  select,
+  textarea {
+    min-width: 0;
+  }
+
+  img,
+  video,
+  canvas {
+    max-width: 100%;
+    height: auto;
   }
 
   button:not(:disabled),

@@ -91,11 +91,11 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           </div>
 
           {/* Quick add */}
-          <div className="absolute bottom-0 inset-x-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <div className="absolute bottom-0 inset-x-0 translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-300">
             <button
               onClick={handleAddToCart}
               disabled={product.stockStatus === "out_of_stock"}
-              className="w-full bg-foreground/95 backdrop-blur-sm text-background py-3 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-foreground transition-colors"
+              className="w-full bg-foreground/95 backdrop-blur-sm text-background py-2.5 sm:py-3 text-[10px] sm:text-xs font-bold uppercase tracking-wide sm:tracking-widest flex items-center justify-center gap-1.5 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-foreground transition-colors"
             >
               <ShoppingBag size={13} />
               {product.stockStatus === "out_of_stock" ? "Esaurito" : "Aggiungi al Carrello"}
@@ -104,13 +104,13 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
         </div>
 
         {/* Info */}
-        <div className="pt-3 space-y-1">
+        <div className="pt-2.5 sm:pt-3 space-y-1 min-w-0">
           <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground truncate">{product.brand}</p>
           <p className="text-sm font-semibold leading-snug line-clamp-2 break-words min-h-[2.5rem]">{product.title}</p>
 
           {/* Sizes preview */}
           {!hasOneSize && availableSizes.length > 0 && (
-            <div className="flex gap-1 flex-wrap">
+            <div className="hidden sm:flex gap-1 flex-wrap">
               {availableSizes.map((v) => (
                 <span key={v.id} className="text-[10px] text-muted-foreground font-medium border border-border rounded px-1.5 py-0.5">
                   {v.size}
@@ -123,7 +123,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           )}
 
           {/* Price */}
-          <div className="flex items-center gap-2 pt-0.5">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 pt-0.5">
             <span className={cn("font-bold text-sm", discountPercent > 0 && "text-red-500")}>
               {formatPrice(effectivePrice)}
             </span>

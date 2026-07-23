@@ -213,9 +213,9 @@ export default function ShopPage() {
   const parentCategory = categoryData?.parentId ? categories.find((c) => c.id === categoryData.parentId) : null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-5 sm:py-8 min-w-0">
       {/* Breadcrumbs */}
-      <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6">
+      <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4 sm:mb-6 min-w-0 overflow-hidden whitespace-nowrap">
         <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
         <span>/</span>
         {parentCategory && (
@@ -224,28 +224,28 @@ export default function ShopPage() {
             <span>/</span>
           </>
         )}
-        <span className="text-foreground font-medium">{pageTitle}</span>
+        <span className="text-foreground font-medium truncate min-w-0">{pageTitle}</span>
       </nav>
 
       {/* Header */}
-      <div className="flex items-end justify-between mb-8">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight">{pageTitle}</h1>
+      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-end justify-between gap-3 mb-6 sm:mb-8 min-w-0">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight break-words">{pageTitle}</h1>
           <p className="text-muted-foreground text-sm mt-1">{filteredProducts.length} prodotti</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           {/* Sort */}
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="hidden md:block text-sm border border-border rounded px-3 py-2 bg-background font-medium outline-none focus:border-foreground cursor-pointer"
+            className="hidden lg:block text-sm border border-border rounded px-3 py-2 bg-background font-medium outline-none focus:border-foreground cursor-pointer"
           >
             {sortOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
           {/* Filter toggle (mobile) */}
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
-            className="flex items-center gap-2 border border-border rounded px-4 py-2 text-sm font-semibold hover:border-foreground transition-colors md:hidden"
+            className="w-full min-[420px]:w-auto flex items-center justify-center gap-2 border border-border rounded px-4 py-2.5 text-sm font-semibold hover:border-foreground transition-colors lg:hidden"
           >
             <SlidersHorizontal size={15} /> Filtri
             {hasActiveFilters && <span className="w-2 h-2 rounded-full bg-accent" />}
@@ -275,7 +275,7 @@ export default function ShopPage() {
 
       <div className="flex gap-8">
         {/* Desktop Sidebar Filters */}
-        <aside className="hidden md:block w-56 shrink-0">
+        <aside className="hidden lg:block w-56 shrink-0">
           <div className="sticky top-24">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-black uppercase tracking-widest">Filtra</h3>
@@ -292,19 +292,19 @@ export default function ShopPage() {
         {/* Product Grid */}
         <div className="flex-1 min-w-0">
           {/* Mobile sort */}
-          <div className="flex items-center justify-between mb-4 md:hidden">
+          <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between gap-2 mb-4 lg:hidden">
             <span className="text-sm text-muted-foreground">{filteredProducts.length} prodotti</span>
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortOption)}
-              className="text-sm border border-border rounded px-3 py-2 bg-background font-medium outline-none"
+              className="w-full min-[380px]:w-auto max-w-full text-sm border border-border rounded px-3 py-2 bg-background font-medium outline-none"
             >
               {sortOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
             </div>
           ) : filteredProducts.length === 0 ? (
@@ -317,7 +317,7 @@ export default function ShopPage() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+              <div className="grid grid-cols-1 min-[380px]:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                 {displayedProducts.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
               </div>
               {visibleCount < filteredProducts.length && (

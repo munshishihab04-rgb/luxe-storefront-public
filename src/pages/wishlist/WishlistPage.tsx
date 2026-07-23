@@ -7,9 +7,9 @@ export default function WishlistPage() {
   const { items } = useWishlist();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
-      <h1 className="text-3xl font-black tracking-tight mb-2">Wishlist</h1>
-      <p className="text-muted-foreground text-sm mb-10">{items.length} {items.length === 1 ? "prodotto salvato" : "prodotti salvati"}</p>
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-10">
+      <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">Wishlist</h1>
+      <p className="text-muted-foreground text-sm mb-6 sm:mb-10">{items.length} {items.length === 1 ? "prodotto salvato" : "prodotti salvati"}</p>
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
@@ -25,7 +25,7 @@ export default function WishlistPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {items.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
         </div>
       )}

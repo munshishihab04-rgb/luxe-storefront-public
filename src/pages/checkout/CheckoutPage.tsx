@@ -93,23 +93,23 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-6 py-10">
-      <Link to="/cart" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-5 sm:py-8 md:py-10 min-w-0">
+      <Link to="/cart" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-5 sm:mb-8 transition-colors">
         ← Torna al carrello
       </Link>
 
-      <div className="grid md:grid-cols-5 gap-10">
+      <div className="grid md:grid-cols-5 gap-6 sm:gap-8 md:gap-10 min-w-0">
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="md:col-span-3 space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="md:col-span-3 space-y-6 sm:space-y-8 min-w-0">
           {/* Steps indicator */}
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
+          <div className="grid grid-cols-3 gap-1 sm:flex sm:items-center sm:gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-wide sm:tracking-widest">
             {(["info", "shipping", "payment"] as const).map((s, i) => (
-              <div key={s} className="flex items-center gap-2">
-                {i > 0 && <div className="w-8 h-px bg-border" />}
+              <div key={s} className="flex items-center gap-2 min-w-0">
+                {i > 0 && <div className="hidden sm:block w-8 h-px bg-border" />}
                 <button
                   type="button"
                   onClick={() => setStep(s)}
-                  className={cn("px-3 py-1.5 rounded", step === s ? "bg-foreground text-background" : "text-muted-foreground")}
+                  className={cn("w-full sm:w-auto px-1.5 sm:px-3 py-2 sm:py-1.5 rounded truncate", step === s ? "bg-foreground text-background" : "text-muted-foreground")}
                 >
                   {i + 1}. {s === "info" ? "Dati" : s === "shipping" ? "Spedizione" : "Pagamento"}
                 </button>
@@ -183,15 +183,15 @@ export default function CheckoutPage() {
               { id: "standard", label: "Spedizione Standard", desc: "3-5 giorni lavorativi", price: "Gratuita" },
               { id: "express", label: "Spedizione Express", desc: "1-2 giorni lavorativi", price: "€12,00" },
             ].map((method) => (
-              <label key={method.id} className={cn("flex items-center justify-between p-4 border rounded cursor-pointer transition-colors", shippingMethod === method.id ? "border-foreground bg-muted" : "border-border hover:border-muted-foreground")}>
-                <div className="flex items-center gap-3">
+              <label key={method.id} className={cn("flex items-center justify-between gap-3 p-3 sm:p-4 border rounded cursor-pointer transition-colors min-w-0", shippingMethod === method.id ? "border-foreground bg-muted" : "border-border hover:border-muted-foreground")}>
+                <div className="flex items-center gap-3 min-w-0">
                   <input type="radio" {...register("shippingMethod")} value={method.id} className="accent-foreground" />
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-semibold">{method.label}</p>
                     <p className="text-xs text-muted-foreground">{method.desc}</p>
                   </div>
                 </div>
-                <span className={cn("text-sm font-bold", method.price === "Gratuita" && "text-green-600")}>{method.price}</span>
+                <span className={cn("text-sm font-bold shrink-0", method.price === "Gratuita" && "text-green-600")}>{method.price}</span>
               </label>
             ))}
           </div>
@@ -213,8 +213,8 @@ export default function CheckoutPage() {
               ))}
             </div>
             {watch("paymentMethod") === "xpay" && (
-              <div className="p-4 bg-muted rounded border border-border text-sm text-muted-foreground flex items-center gap-2">
-                <Lock size={14} />
+              <div className="p-3 sm:p-4 bg-muted rounded border border-border text-xs sm:text-sm text-muted-foreground flex items-start gap-2">
+                <Lock size={14} className="shrink-0 mt-0.5" />
                 Pagamento sicuro tramite Nexi XPay. Inserirai i dati carta solo sulla pagina protetta Nexi: nessun dato carta viene salvato su LUXE.
               </div>
             )}
@@ -239,7 +239,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-2 bg-foreground text-background py-4 rounded font-black text-sm uppercase tracking-widest hover:bg-foreground/90 transition-colors"
+            className="w-full min-h-12 flex items-center justify-center gap-2 bg-foreground text-background px-3 py-3.5 sm:py-4 rounded font-black text-xs sm:text-sm uppercase tracking-wide sm:tracking-widest hover:bg-foreground/90 transition-colors"
           >
             {isSubmitting ? <Loader2 size={15} className="animate-spin" /> : <Shield size={15} />}
             {isSubmitting ? "Avvio pagamento sicuro..." : `Paga con Nexi XPay — ${formatPrice(finalTotal)}`}
@@ -248,13 +248,13 @@ export default function CheckoutPage() {
 
         {/* Order Summary */}
         <div className="md:col-span-2">
-          <div className="sticky top-24 border border-border rounded p-6 space-y-5">
+          <div className="md:sticky md:top-24 border border-border rounded p-4 sm:p-6 space-y-5 min-w-0">
             <h2 className="font-black text-lg">Riepilogo Ordine</h2>
             <div className="space-y-4 max-h-64 overflow-y-auto pr-1">
               {items.map((item) => {
                 const price = item.product.salePrice ?? item.product.price;
                 return (
-                  <div key={`${item.productId}-${item.variantId ?? ""}`} className="flex gap-3">
+                  <div key={`${item.productId}-${item.variantId ?? ""}`} className="flex gap-3 min-w-0">
                     <div className="relative shrink-0">
                       <img src={item.product.images[0]} alt={item.product.title} className="w-16 h-16 object-cover rounded bg-muted" />
                       <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-muted-foreground text-background text-[10px] font-bold flex items-center justify-center">
@@ -266,7 +266,7 @@ export default function CheckoutPage() {
                       <p className="text-sm font-semibold line-clamp-1">{item.product.title}</p>
                       {item.selectedSize && <p className="text-xs text-muted-foreground">Taglia: {item.selectedSize}</p>}
                     </div>
-                    <p className="text-sm font-bold shrink-0">{formatPrice(price * item.quantity)}</p>
+                    <p className="text-xs sm:text-sm font-bold shrink-0">{formatPrice(price * item.quantity)}</p>
                   </div>
                 );
               })}

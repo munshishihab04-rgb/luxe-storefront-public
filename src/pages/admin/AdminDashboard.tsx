@@ -91,12 +91,12 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white px-4 py-6 md:px-8">
+    <div className="min-h-screen bg-neutral-950 text-white px-3 sm:px-4 py-5 sm:py-6 md:px-8 overflow-x-hidden">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-300">LUXE Admin</p>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tight">Catalogo & Categorie</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight break-words">Catalogo & Categorie</h1>
             <p className="text-neutral-400 mt-2">Gestione runtime JSON: modifiche attive dopo salvataggio e reload storefront.</p>
           </div>
           <a href="/" className="border border-white/20 rounded px-4 py-2 text-sm font-bold hover:bg-white hover:text-black">Vedi sito</a>
@@ -125,8 +125,8 @@ export default function AdminDashboard() {
 
         {tab === "products" ? (
           <div className="grid lg:grid-cols-[1fr_420px] gap-4">
-            <div className="rounded-xl border border-white/10 overflow-hidden">
-              <table className="w-full text-sm"><thead className="bg-white/10 text-left"><tr><th className="p-3">Prodotto</th><th>Brand</th><th>Prezzo</th><th>Stock</th><th></th></tr></thead><tbody>
+            <div className="rounded-xl border border-white/10 overflow-x-auto">
+              <table className="w-full min-w-[46rem] text-sm"><thead className="bg-white/10 text-left"><tr><th className="p-3">Prodotto</th><th>Brand</th><th>Prezzo</th><th>Stock</th><th></th></tr></thead><tbody>
                 {products.map(p=><tr key={p.id} className="border-t border-white/10"><td className="p-3"><b>{p.title}</b><br/><span className="text-neutral-400">{p.sku}</span></td><td>{p.brand}</td><td>{euro(p.salePrice || p.price)}</td><td>{p.stockStatus}</td><td className="text-right pr-3"><button onClick={()=>setSelected({...p})} className="text-cyan-300 font-bold mr-3">Edit</button><button onClick={()=>deleteProduct(p.id)} className="text-red-300 font-bold">Del</button></td></tr>)}
               </tbody></table>
             </div>
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
           </div>
         ) : (
           <div className="grid lg:grid-cols-[1fr_420px] gap-4">
-            <div className="rounded-xl border border-white/10 overflow-hidden"><table className="w-full text-sm"><thead className="bg-white/10 text-left"><tr><th className="p-3">Categoria</th><th>Slug</th><th>Parent</th><th></th></tr></thead><tbody>
+            <div className="rounded-xl border border-white/10 overflow-x-auto"><table className="w-full min-w-[38rem] text-sm"><thead className="bg-white/10 text-left"><tr><th className="p-3">Categoria</th><th>Slug</th><th>Parent</th><th></th></tr></thead><tbody>
               {categories.map(c=><tr key={c.id} className="border-t border-white/10"><td className="p-3 font-bold">{c.nameIt}</td><td>{c.slug}</td><td>{c.parentId || '-'}</td><td className="text-right pr-3"><button onClick={()=>setCategory({...c})} className="text-cyan-300 font-bold mr-3">Edit</button><button onClick={()=>deleteCategory(c.id)} className="text-red-300 font-bold">Del</button></td></tr>)}
             </tbody></table></div>
             <CategoryEditor category={category} setCategory={setCategory} save={saveCategory} />
@@ -147,11 +147,11 @@ export default function AdminDashboard() {
 
 function Editor({ product, setProduct, save }: { product: Product | null; setProduct: (p: Product | null) => void; save: () => void }) {
   if (!product) return <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-neutral-400">Seleziona un prodotto da modificare.</div>;
-  return <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3 sticky top-4 h-fit">
+  return <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3 lg:sticky lg:top-4 h-fit min-w-0">
     <h2 className="text-xl font-black">Modifica prodotto</h2>
     <input className="field" value={product.title} onChange={e=>setProduct({...product,title:e.target.value})} />
     <input className="field" value={product.brand} onChange={e=>setProduct({...product,brand:e.target.value})} />
-    <div className="grid grid-cols-2 gap-2"><input className="field" type="number" value={product.price} onChange={e=>setProduct({...product,price:Number(e.target.value)})} /><input className="field" type="number" value={product.regularPrice} onChange={e=>setProduct({...product,regularPrice:Number(e.target.value)})} /></div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2"><input className="field" type="number" value={product.price} onChange={e=>setProduct({...product,price:Number(e.target.value)})} /><input className="field" type="number" value={product.regularPrice} onChange={e=>setProduct({...product,regularPrice:Number(e.target.value)})} /></div>
     <textarea className="field h-24" value={product.shortDescription} onChange={e=>setProduct({...product,shortDescription:e.target.value})} />
     <textarea className="field h-32" value={product.longDescription} onChange={e=>setProduct({...product,longDescription:e.target.value})} />
     <input className="field" value={product.categories.join(', ')} onChange={e=>setProduct({...product,categories:e.target.value.split(',').map(s=>s.trim()).filter(Boolean)})} />
@@ -162,7 +162,7 @@ function Editor({ product, setProduct, save }: { product: Product | null; setPro
 
 function CategoryEditor({ category, setCategory, save }: { category: Category | null; setCategory: (c: Category | null) => void; save: () => void }) {
   if (!category) return <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-neutral-400">Seleziona una categoria.</div>;
-  return <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3 sticky top-4 h-fit">
+  return <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3 lg:sticky lg:top-4 h-fit min-w-0">
     <h2 className="text-xl font-black">Modifica categoria</h2>
     <input className="field" value={category.nameIt} onChange={e=>setCategory({...category,nameIt:e.target.value,name:e.target.value})} />
     <input className="field opacity-70" value={category.slug} readOnly aria-label="Slug categoria (non modificabile)" title="Lo slug è un identificatore stabile e non può essere modificato" />

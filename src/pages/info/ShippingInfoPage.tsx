@@ -1,8 +1,8 @@
 function InfoPage({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="max-w-3xl mx-auto px-4 md:px-6 py-12">
-      <h1 className="text-3xl font-black tracking-tight mb-8">{title}</h1>
-      <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed space-y-5">
+    <div className="max-w-3xl mx-auto px-3 sm:px-4 md:px-6 py-7 sm:py-12 min-w-0">
+      <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-5 sm:mb-8 break-words">{title}</h1>
+      <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed space-y-5 break-words">
         {children}
       </div>
     </div>

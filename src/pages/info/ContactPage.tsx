@@ -28,13 +28,13 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-12">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 py-7 sm:py-12 min-w-0">
       <div className="mb-10">
         <h1 className="text-3xl font-black tracking-tight mb-2">Contattaci</h1>
         <p className="text-muted-foreground">Siamo qui per aiutarti. Rispondiamo entro 24 ore.</p>
       </div>
 
-      <div className="grid md:grid-cols-5 gap-10">
+      <div className="grid md:grid-cols-5 gap-7 sm:gap-10 min-w-0">
         {/* Info */}
         <div className="md:col-span-2 space-y-6">
           {[
@@ -65,7 +65,7 @@ export default function ContactPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wide text-muted-foreground block mb-1.5">Nome *</label>
                   <input {...register("name")} placeholder="Mario Rossi" className="w-full px-4 py-3 border border-border rounded text-sm outline-none bg-background focus:border-foreground" />

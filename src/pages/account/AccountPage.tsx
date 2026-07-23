@@ -3,8 +3,8 @@ import { User, Package, Heart, Settings, LogOut } from "lucide-react";
 
 export default function AccountPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-10">
-      <h1 className="text-3xl font-black tracking-tight mb-10">Il Mio Account</h1>
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-10">
+      <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-6 sm:mb-10">Il Mio Account</h1>
 
       <div className="grid md:grid-cols-3 gap-8">
         {/* Profile card */}
@@ -24,7 +24,7 @@ export default function AccountPage() {
         </div>
 
         {/* Quick links */}
-        <div className="md:col-span-2 grid grid-cols-2 gap-4">
+        <div className="md:col-span-2 grid grid-cols-1 min-[380px]:grid-cols-2 gap-4">
           {[
             { icon: Package, title: "I Miei Ordini", desc: "Traccia e gestisci i tuoi ordini", href: "/" },
             { icon: Heart, title: "Wishlist", desc: "I prodotti che hai salvato", href: "/wishlist" },

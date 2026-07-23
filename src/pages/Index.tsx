@@ -27,13 +27,13 @@ const trustItems = [
 
 function SectionHeader({ title, subtitle, cta, ctaHref }: { title: string; subtitle?: string; cta?: string; ctaHref?: string }) {
   return (
-    <div className="flex items-end justify-between mb-8">
-      <div>
+    <div className="flex flex-col items-start sm:flex-row sm:items-end sm:justify-between gap-3 mb-5 sm:mb-8 min-w-0">
+      <div className="min-w-0">
         <h2 className="text-2xl md:text-3xl font-black tracking-tight">{title}</h2>
         {subtitle && <p className="text-muted-foreground text-sm mt-1">{subtitle}</p>}
       </div>
       {cta && ctaHref && (
-        <Link to={ctaHref} className="flex items-center gap-1.5 text-sm font-semibold hover:text-accent transition-colors shrink-0 ml-4">
+        <Link to={ctaHref} className="flex items-center gap-1 text-xs sm:text-sm font-semibold hover:text-accent transition-colors shrink-0 text-right">
           {cta} <ArrowRight size={14} />
         </Link>
       )}
@@ -45,7 +45,7 @@ export default function Index() {
   return (
     <div>
       {/* ─── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative h-[85vh] min-h-[500px] max-h-[900px] bg-[#0a0a0a] text-white overflow-hidden">
+      <section className="relative min-h-[34rem] h-[78svh] max-h-[900px] bg-[#0a0a0a] text-white overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="https://placehold.co/1920x1080/0a0a0a/1a1a1a?text=."
@@ -74,7 +74,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-5xl md:text-7xl font-black tracking-tight leading-none text-balance mb-6"
+              className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-none text-balance mb-5 sm:mb-6"
             >
               Il Meglio<br />del Lusso<br /><span className="text-accent">Urbano.</span>
             </motion.h1>
@@ -82,7 +82,7 @@ export default function Index() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="text-base md:text-lg text-white/70 mb-10 max-w-md"
+              className="text-sm sm:text-base md:text-lg text-white/70 mb-7 sm:mb-10 max-w-md"
             >
               Sneakers, streetwear e accessori di lusso. Ogni prodotto autenticato e spedito in 24/48 ore.
             </motion.p>
@@ -117,7 +117,7 @@ export default function Index() {
       {/* ─── FEATURED PRODUCTS ─────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-20">
         <SectionHeader title="In Evidenza" subtitle="I pezzi più ambiti del momento" cta="Vedi tutto" ctaHref="/shop" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {featured.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
         </div>
       </section>
@@ -125,7 +125,7 @@ export default function Index() {
       {/* ─── CATEGORY HIGHLIGHTS ───────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
         <SectionHeader title="Esplora le Categorie" />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {categoryHighlights.map((cat, i) => (
             <motion.div
               key={cat.label}
@@ -154,14 +154,14 @@ export default function Index() {
       {/* ─── NEW ARRIVALS ───────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
         <SectionHeader title="Nuovi Arrivi" subtitle="Le ultime uscite appena arrivate" cta="Tutti i Nuovi Arrivi" ctaHref="/nuovi-arrivi" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {newArrivals.slice(0, 8).map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
         </div>
       </section>
 
       {/* ─── BANNER ─────────────────────────────────────────────────────────────── */}
-      <section className="mx-4 md:mx-6 mb-20 bg-foreground text-background rounded overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-14 md:py-20 grid md:grid-cols-2 gap-8 items-center">
+      <section className="mx-3 sm:mx-4 md:mx-6 mb-12 sm:mb-16 md:mb-20 bg-foreground text-background rounded overflow-hidden">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-12 py-10 sm:py-14 md:py-20 grid md:grid-cols-2 gap-8 items-center">
           <div>
             <span className="text-xs font-black uppercase tracking-[0.2em] text-white/40 block mb-3">Esclusiva Autenticità</span>
             <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-none mb-4">
@@ -189,7 +189,7 @@ export default function Index() {
       {/* ─── BEST SELLERS ───────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
         <SectionHeader title="Più Venduti" subtitle="I pezzi che non passano mai di moda" cta="Vedi tutti" ctaHref="/shop/piu-venduti" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {bestSellers.slice(0, 8).map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
         </div>
       </section>
@@ -199,7 +199,7 @@ export default function Index() {
         <section className="bg-muted py-20">
           <div className="max-w-7xl mx-auto px-4 md:px-6">
             <SectionHeader title="In Saldo" subtitle="Offerte limitate — approfitta ora" cta="Tutti i Saldi" ctaHref="/saldi" />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {saleProducts.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
             </div>
           </div>
@@ -208,7 +208,7 @@ export default function Index() {
 
       {/* ─── TRUST ───────────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 md:px-6 py-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {trustItems.map((item, i) => (
             <motion.div
               key={item.title}
