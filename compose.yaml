@@ -1,0 +1,53 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        VITE_CONVEX_URL: ${VITE_CONVEX_URL:-}
+        VITE_HERCULES_OIDC_AUTHORITY: ${VITE_HERCULES_OIDC_AUTHORITY:-}
+        VITE_HERCULES_OIDC_CLIENT_ID: ${VITE_HERCULES_OIDC_CLIENT_ID:-}
+        VITE_HERCULES_OIDC_PROMPT: ${VITE_HERCULES_OIDC_PROMPT:-select_account}
+        VITE_HERCULES_OIDC_RESPONSE_TYPE: ${VITE_HERCULES_OIDC_RESPONSE_TYPE:-code}
+        VITE_HERCULES_OIDC_SCOPE: ${VITE_HERCULES_OIDC_SCOPE:-openid profile email}
+        VITE_HERCULES_OIDC_REDIRECT_URI: ${VITE_HERCULES_OIDC_REDIRECT_URI:-}
+        VITE_HERCULES_WEBSITE_ID: ${VITE_HERCULES_WEBSITE_ID:-}
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+      PORT: 4173
+      ORDERS_DIR: /app/var/orders
+      TRUST_PROXY: "true"
+    volumes:
+      - ./data:/app/data
+      - luxe-orders:/app/var/orders
+    expose:
+      - "4173"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4173/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  luxe-orders:
+  caddy-data:
+  caddy-config:

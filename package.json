@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "serve:xpay": "node server/xpay-server.mjs",
     "build": "tsc -b && vite build",
-    "test": "vitest run",
+    "test": "vitest run && node --test server/*.test.mjs",
     "lint": "eslint .",
     "prettier-fix": "prettier --write .",
     "prettier-check": "prettier --check ."

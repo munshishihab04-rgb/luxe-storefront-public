@@ -8,6 +8,7 @@ import { useWishlist } from "../../contexts/WishlistContext.tsx";
 import ProductCard from "../../components/product/ProductCard.tsx";
 import { cn } from "@/lib/utils.ts";
 import { toast } from "sonner";
+import { canPurchaseSelection, serializeJsonLd } from "./product-utils.ts";
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -35,16 +36,27 @@ export default function ProductPage() {
   const uniqueSizes = product.variants.filter((v) => v.size);
 
   const handleAddToCart = () => {
-    if (uniqueSizes.length > 0 && !selectedVariant) {
+    if (!canPurchaseSelection(product, selectedVariant)) {
       toast.error("Seleziona una taglia prima di procedere");
-      return;
+      return false;
     }
     addItem(product, selectedVariantData?.size, selectedVariantData?.color, selectedVariant ?? undefined);
+    return true;
   };
 
   const handleBuyNow = () => {
-    handleAddToCart();
-    navigate("/checkout");
+    if (handleAddToCart()) navigate("/checkout");
+  };
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) await navigator.share({ title: product.title, url: window.location.href });
+      else await navigator.clipboard.writeText(window.location.href);
+      toast.success("Link prodotto condiviso");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      toast.error("Impossibile condividere il link");
+    }
   };
 
   return (
@@ -83,12 +95,14 @@ export default function ProductPage() {
                 <button
                   onClick={() => setActiveImage((prev) => (prev - 1 + product.images.length) % product.images.length)}
                   className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors opacity-0 group-hover:opacity-100"
+                  aria-label="Immagine precedente"
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button
                   onClick={() => setActiveImage((prev) => (prev + 1) % product.images.length)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors opacity-0 group-hover:opacity-100"
+                  aria-label="Immagine successiva"
                 >
                   <ChevronRight size={18} />
                 </button>
@@ -102,6 +116,7 @@ export default function ProductPage() {
                 <button
                   key={i}
                   onClick={() => setActiveImage(i)}
+                  aria-label={`Mostra immagine ${i + 1} di ${product.title}`}
                   className={cn(
                     "shrink-0 w-20 h-20 rounded overflow-hidden border-2 transition-colors",
                     i === activeImage ? "border-foreground" : "border-transparent hover:border-muted-foreground"
@@ -120,7 +135,7 @@ export default function ProductPage() {
             <div className="flex items-center justify-between mb-1">
               <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">{product.brand}</p>
               <button
-                onClick={() => toast.info("Link copiato!")}
+                onClick={handleShare}
                 className="p-2 rounded hover:bg-muted transition-colors"
                 aria-label="Condividi"
               >
@@ -250,7 +265,7 @@ export default function ProductPage() {
 
       {/* JSON-LD Schema */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
+        __html: serializeJsonLd({
           "@context": "https://schema.org",
           "@type": "Product",
           name: product.title,

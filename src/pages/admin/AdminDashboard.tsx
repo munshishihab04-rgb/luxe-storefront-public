@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Product } from "../../types/product.ts";
 import type { Category } from "../../types/category.ts";
 
@@ -11,7 +11,7 @@ function euro(value: number) {
 }
 
 export default function AdminDashboard() {
-  const [token, setToken] = useState(localStorage.getItem("luxeAdminToken") || "");
+  const [token, setToken] = useState(sessionStorage.getItem("luxeAdminToken") || "");
   const [catalog, setCatalog] = useState<Catalog>(emptyCatalog);
   const [tab, setTab] = useState<"products" | "categories">("products");
   const [query, setQuery] = useState("");
@@ -19,7 +19,7 @@ export default function AdminDashboard() {
   const [category, setCategory] = useState<Category | null>(null);
   const [status, setStatus] = useState("Caricamento...");
 
-  async function api(path: string, options: RequestInit = {}) {
+  const api = useCallback(async (path: string, options: RequestInit = {}) => {
     const res = await fetch(path, {
       ...options,
       headers: { "Content-Type": "application/json", "x-admin-token": token, ...(options.headers || {}) },
@@ -27,9 +27,9 @@ export default function AdminDashboard() {
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.message || data.error || `HTTP ${res.status}`);
     return data;
-  }
+  }, [token]);
 
-  async function load() {
+  const load = useCallback(async () => {
     try {
       const data = await api("/api/admin/catalog");
       setCatalog(data.catalog);
@@ -37,9 +37,24 @@ export default function AdminDashboard() {
     } catch (e) {
       setStatus(e instanceof Error ? e.message : "Errore caricamento");
     }
-  }
+  }, [api]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { void load(); }, [load]);
+
+  async function exportCatalog() {
+    try {
+      const response = await fetch("/api/admin/export", { headers: { "x-admin-token": token } });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "luxe-catalog-export.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setStatus(error instanceof Error ? `Export non riuscito: ${error.message}` : "Export non riuscito");
+    }
+  }
 
   const products = useMemo(() => {
     const q = query.toLowerCase();
@@ -95,10 +110,10 @@ export default function AdminDashboard() {
         </div>
 
         <div className="rounded-xl border border-white/10 bg-white/5 p-4 flex flex-col md:flex-row gap-3 md:items-center">
-          <input value={token} onChange={(e)=>{setToken(e.target.value); localStorage.setItem("luxeAdminToken", e.target.value)}} placeholder="Admin token" className="bg-black/40 border border-white/10 rounded px-3 py-2 text-sm flex-1" />
+          <input type="password" autoComplete="off" value={token} onChange={(e)=>{setToken(e.target.value); sessionStorage.setItem("luxeAdminToken", e.target.value)}} placeholder="Admin token" className="bg-black/40 border border-white/10 rounded px-3 py-2 text-sm flex-1" />
           <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Cerca prodotto, SKU, brand, categoria..." className="bg-black/40 border border-white/10 rounded px-3 py-2 text-sm flex-[2]" />
           <button onClick={load} className="bg-cyan-300 text-black rounded px-4 py-2 font-black text-sm">Ricarica</button>
-          <a href={`/api/admin/export?token=${encodeURIComponent(token)}`} target="_blank" className="border border-white/20 rounded px-4 py-2 text-sm font-bold">Export JSON</a>
+          <button type="button" onClick={exportCatalog} className="border border-white/20 rounded px-4 py-2 text-sm font-bold">Export JSON</button>
         </div>
 
         <p className="text-sm text-cyan-200">{status}</p>
@@ -150,7 +165,7 @@ function CategoryEditor({ category, setCategory, save }: { category: Category | 
   return <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3 sticky top-4 h-fit">
     <h2 className="text-xl font-black">Modifica categoria</h2>
     <input className="field" value={category.nameIt} onChange={e=>setCategory({...category,nameIt:e.target.value,name:e.target.value})} />
-    <input className="field" value={category.slug} onChange={e=>setCategory({...category,slug:e.target.value,id:e.target.value})} />
+    <input className="field opacity-70" value={category.slug} readOnly aria-label="Slug categoria (non modificabile)" title="Lo slug è un identificatore stabile e non può essere modificato" />
     <input className="field" value={category.parentId || ''} onChange={e=>setCategory({...category,parentId:e.target.value || undefined})} />
     <textarea className="field h-24" value={category.description || ''} onChange={e=>setCategory({...category,description:e.target.value})} />
     <div className="flex gap-2"><button onClick={save} className="bg-cyan-300 text-black rounded px-4 py-2 font-black">Salva</button><button onClick={()=>setCategory(null)} className="border border-white/20 rounded px-4 py-2">Chiudi</button></div>

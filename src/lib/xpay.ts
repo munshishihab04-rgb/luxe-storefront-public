@@ -16,7 +16,6 @@ export type XPayShipping = {
 };
 
 export type CreateXPayPaymentInput = {
-  amountCents: number;
   customer: XPayCustomer;
   shipping: XPayShipping;
   items: CartItem[];
@@ -54,7 +53,8 @@ export async function createXPayPayment(input: CreateXPayPaymentInput): Promise<
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      ...input,
+      customer: input.customer,
+      shipping: input.shipping,
       items: cartItemsForPayment(input.items),
     }),
   });

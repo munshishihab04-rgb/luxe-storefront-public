@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import type { CartItem, Product } from "../types/product.ts";
 import { toast } from "sonner";
+import { parseStoredCart } from "./cart-storage.ts";
 
 type CartContextType = {
   items: CartItem[];
@@ -16,14 +17,19 @@ type CartContextType = {
 };
 
 const CartContext = createContext<CartContextType | null>(null);
+const CART_STORAGE_KEY = "luxe:cart";
 
 function getItemKey(productId: string, variantId?: string): string {
   return variantId ? `${productId}-${variantId}` : productId;
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => typeof window === "undefined" ? [] : parseStoredCart(localStorage.getItem(CART_STORAGE_KEY)));
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  }, [items]);
 
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);

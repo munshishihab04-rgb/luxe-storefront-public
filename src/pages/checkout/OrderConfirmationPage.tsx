@@ -2,13 +2,51 @@ import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { useCart } from "../../contexts/CartContext.tsx";
+import { isPaidOrderStatus } from "./order-utils.ts";
 
 export default function OrderConfirmationPage() {
   const [searchParams] = useSearchParams();
   const provider = searchParams.get("provider");
   const xpayOrder = searchParams.get("order");
-  const orderNumber = xpayOrder || `LX${Date.now().toString().slice(-8)}`;
-  const isXpay = provider === "xpay";
+  const { clearCart } = useCart();
+  const [verification, setVerification] = useState<"loading" | "paid" | "invalid">("loading");
+
+  useEffect(() => {
+    if (provider !== "xpay" || !xpayOrder) {
+      setVerification("invalid");
+      return;
+    }
+    const controller = new AbortController();
+    fetch(`/api/xpay/status?order=${encodeURIComponent(xpayOrder)}`, { signal: controller.signal })
+      .then(async (response) => response.ok ? response.json() : null)
+      .then((payload) => {
+        if (isPaidOrderStatus(payload)) {
+          clearCart();
+          setVerification("paid");
+        } else setVerification("invalid");
+      })
+      .catch((error) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setVerification("invalid");
+      });
+    return () => controller.abort();
+  }, [clearCart, provider, xpayOrder]);
+
+  if (verification === "loading") {
+    return <div className="max-w-lg mx-auto px-4 py-20 text-center"><p className="font-bold">Verifica del pagamento in corso…</p></div>;
+  }
+
+  if (verification === "invalid") {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-20 text-center space-y-5">
+        <h1 className="text-3xl font-black tracking-tight">Ordine non verificato</h1>
+        <p className="text-muted-foreground">Non possiamo confermare il pagamento. Torna al checkout o contatta l’assistenza senza ripetere il pagamento.</p>
+        <Link to="/checkout" className="inline-flex bg-foreground text-background px-6 py-3 rounded font-bold">Torna al checkout</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-lg mx-auto px-4 py-20 text-center">
@@ -29,14 +67,12 @@ export default function OrderConfirmationPage() {
       >
         <h1 className="text-3xl font-black tracking-tight">Ordine Confermato!</h1>
         <p className="text-muted-foreground">
-          {isXpay
-            ? "Pagamento Nexi XPay ricevuto correttamente. Prepariamo ora il tuo ordine."
-            : "Grazie per il tuo acquisto. Hai ricevuto una conferma via email con tutti i dettagli del tuo ordine."}
+          Pagamento Nexi XPay verificato. Prepariamo ora il tuo ordine.
         </p>
 
         <div className="inline-flex items-center gap-2 bg-muted rounded-lg px-6 py-3 mt-4">
           <Package size={18} className="text-muted-foreground" />
-          <span className="text-sm font-bold">Ordine #{orderNumber}</span>
+          <span className="text-sm font-bold">Ordine #{xpayOrder}</span>
         </div>
 
         <div className="bg-muted rounded-xl p-6 mt-6 text-left space-y-3">

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowRight, Shield, Lock, Loader2, CreditCard } from "lucide-react";
+import { Shield, Lock, Loader2 } from "lucide-react";
 import { useCart } from "../../contexts/CartContext.tsx";
 import { formatPrice } from "../../lib/products.ts";
 import { createXPayPayment } from "../../lib/xpay.ts";
@@ -27,8 +27,7 @@ const checkoutSchema = z.object({
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
-  const { items, totalPrice, totalItems, clearCart } = useCart();
-  const navigate = useNavigate();
+  const { items, totalPrice, totalItems } = useCart();
   const [step, setStep] = useState<"info" | "shipping" | "payment">("info");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
@@ -66,14 +65,7 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      if (data.paymentMethod === "transfer") {
-        clearCart();
-        navigate("/ordine-confermato?provider=bank-transfer");
-        return;
-      }
-
       const response = await createXPayPayment({
-        amountCents: Math.round(finalTotal * 100),
         customer: {
           firstName: data.firstName,
           lastName: data.lastName,
@@ -128,7 +120,7 @@ export default function CheckoutPage() {
           {/* Customer Info */}
           <div className="space-y-5">
             <h2 className="text-xl font-black tracking-tight">Informazioni di Contatto</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-bold uppercase tracking-wide text-muted-foreground block mb-1.5">Nome *</label>
                 <input {...register("firstName")} placeholder="Mario" className={cn("w-full px-4 py-3 border rounded text-sm outline-none bg-background focus:border-foreground transition-colors", errors.firstName && "border-red-500")} />
@@ -160,7 +152,7 @@ export default function CheckoutPage() {
               <input {...register("address")} placeholder="Via Roma, 1" className={cn("w-full px-4 py-3 border rounded text-sm outline-none bg-background focus:border-foreground transition-colors", errors.address && "border-red-500")} />
               {errors.address && <p className="text-xs text-red-500 mt-1">{errors.address.message}</p>}
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-bold uppercase tracking-wide text-muted-foreground block mb-1.5">Città *</label>
                 <input {...register("city")} placeholder="Milano" className={cn("w-full px-4 py-3 border rounded text-sm outline-none bg-background focus:border-foreground transition-colors", errors.city && "border-red-500")} />
@@ -207,15 +199,15 @@ export default function CheckoutPage() {
           {/* Payment */}
           <div className="space-y-3">
             <h2 className="text-xl font-black tracking-tight">Metodo di Pagamento</h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
                 { id: "xpay", label: "Carta — Nexi XPay" },
                 { id: "paypal", label: "PayPal — prossimamente" },
                 { id: "klarna", label: "Klarna — prossimamente" },
-                { id: "transfer", label: "Bonifico Bancario" },
+                { id: "transfer", label: "Bonifico — prossimamente" },
               ].map((pm) => (
                 <label key={pm.id} className={cn("flex items-center gap-2.5 p-3 border rounded cursor-pointer transition-colors text-sm", watch("paymentMethod") === pm.id ? "border-foreground bg-muted font-semibold" : "border-border hover:border-muted-foreground")}>
-                  <input type="radio" {...register("paymentMethod")} value={pm.id} disabled={pm.id === "paypal" || pm.id === "klarna"} className="accent-foreground" />
+                  <input type="radio" {...register("paymentMethod")} value={pm.id} disabled={pm.id !== "xpay"} className="accent-foreground" />
                   {pm.label}
                 </label>
               ))}
@@ -226,12 +218,7 @@ export default function CheckoutPage() {
                 Pagamento sicuro tramite Nexi XPay. Inserirai i dati carta solo sulla pagina protetta Nexi: nessun dato carta viene salvato su LUXE.
               </div>
             )}
-            {watch("paymentMethod") === "transfer" && (
-              <div className="p-4 bg-muted rounded border border-border text-sm text-muted-foreground flex items-center gap-2">
-                <CreditCard size={14} />
-                Riceverai le istruzioni per completare il bonifico. L'ordine verrà preparato dopo conferma pagamento.
-              </div>
-            )}
+
           </div>
 
           {paymentError && (
